@@ -12,24 +12,41 @@ import {
 import axios from "axios";
 
 const Axios = axios.create({
-  baseURL: "Your Url",
+  baseURL: "https://notify-blog.herokuapp.com/",
 });
 //@ts-ignore
 // A.defaults.headers.common["Authorization"] = `Token ${config.api_key}`;
+type obj = {
+  name: string;
+  time: string;
+};
 
 export default function App() {
   const [Token, setToken] = useState<string | null>("");
   const [text, settext] = useState("");
-  const [Opens, setOpens] = useState([]);
+  const [Data, setData] = useState<number[]>([]);
+  const [Label, setLabel] = useState<string[]>([]);
 
   async function login_an() {
     try {
-      const data = await Axios.get("analytics/3/open", {
+      const data = await Axios.get("analytics/2/open", {
         headers: {
           Authorization: `Token ${Token}`,
         },
       });
-      console.log(data.data);
+      //@ts-ignore
+      const da: obj[] = data.data;
+      let a: string[] = [];
+      da.map((val) => {
+        const ll = new Date(val.time);
+        a.push(ll.toISOString().split("T")[0]);
+      });
+      const counts: any = {};
+      a.forEach(function (x) {
+        counts[x] = (counts[x] || 0) + 1;
+      });
+      setLabel(Object.keys(a));
+      setData(Object.values(a).map(Number));
     } catch (e) {
       console.log(e);
     }
@@ -75,52 +92,54 @@ export default function App() {
       </View>
     );
   }
-
-
+  if (Data.length > 0 && Label.length > 0) {
+    return (
+      <View style={styles.container}>
+        <LineChart
+          data={{
+            labels: [...Label],
+            datasets: [
+              {
+                data: [...Data],
+              },
+            ],
+          }}
+          width={Dimensions.get("window").width} // from react-native
+          height={220}
+          yAxisLabel="$"
+          yAxisSuffix="k"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundColor: "#e26a00",
+            backgroundGradientFrom: "#fb8c00",
+            backgroundGradientTo: "#ffa726",
+            decimalPlaces: 2, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: "6",
+              strokeWidth: "2",
+              stroke: "#ffa726",
+            },
+          }}
+          bezier
+          style={{
+            marginVertical: 8,
+            borderRadius: 16,
+          }}
+        />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
-      <LineChart
-        data={{
-          labels: Opens.map(()),
-          datasets: [
-            {
-              data: [
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-              ],
-            },
-          ],
-        }}
-        width={Dimensions.get("window").width} // from react-native
-        height={220}
-        yAxisLabel="$"
-        yAxisSuffix="k"
-        yAxisInterval={1} // optional, defaults to 1
-        chartConfig={{
-          backgroundColor: "#e26a00",
-          backgroundGradientFrom: "#fb8c00",
-          backgroundGradientTo: "#ffa726",
-          decimalPlaces: 2, // optional, defaults to 2dp
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-          propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#ffa726",
-          },
-        }}
-        bezier
-        style={{
-          marginVertical: 8,
-          borderRadius: 16,
-        }}
+      <ActivityIndicator
+        size="large"
+        animating={true}
+        color={Colors.blueGrey300}
       />
     </View>
   );
