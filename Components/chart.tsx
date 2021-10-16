@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { ActivityIndicator, Colors } from "react-native-paper";
+import { ActivityIndicator, IconButton } from "react-native-paper";
 import axios from "axios";
 
 const Axios = axios.create({
-  baseURL: "https://notify-blog.herokuapp.com/",
+  baseURL: "https://example.com",
 });
 type obj = {
   name: string;
@@ -46,8 +46,10 @@ function Last7Days() {
 export default function chart({
   Token,
   name,
+  label,
 }: {
   Token: string;
+  label: string;
   name: string;
 }) {
   const { width } = useWindowDimensions();
@@ -86,10 +88,10 @@ export default function chart({
           val.split("-")[2] + "-" + monthShortNames[new Date(val).getMonth()]
       );
       setData({
-        labels: t,
+        labels: t.reverse(),
         datasets: [
           {
-            data: dataset,
+            data: dataset.reverse(),
           },
         ],
       });
@@ -97,55 +99,66 @@ export default function chart({
       console.log(e);
     }
   }
+  function refresh() {
+    setData(undefined);
+    login_an();
+  }
 
   if (Data !== undefined) {
     return (
-      <LineChart
-        data={{
-          labels: Data.labels,
-          datasets: [
-            {
-              data: Data.datasets[0].data,
-            },
-          ],
-        }}
-        width={width} // from react-native
-        height={220}
-        yAxisInterval={1} // optional, defaults to 1
-        chartConfig={chartconfig}
-        bezier
-        style={{
-          marginVertical: 8,
-          borderRadius: 16,
-        }}
-      />
+      <View style={{ marginVertical: 7 }}>
+        <LineChart
+          data={{
+            labels: Data.labels,
+            datasets: [
+              {
+                data: Data.datasets[0].data,
+              },
+            ],
+            legend: [label],
+          }}
+          width={width - width * 0.06} // from react-native
+          height={220}
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={chartconfig}
+          bezier
+          style={{
+            borderRadius: 16,
+          }}
+        />
+        <IconButton
+          icon="refresh"
+          color="#31d843"
+          style={{ position: "absolute", right: -5, top: -5 }}
+          onPress={() => refresh()}
+        />
+      </View>
     );
   }
   return (
     <View style={styles.container}>
-      <ActivityIndicator
-        size="large"
-        animating={true}
-        color={Colors.blueGrey300}
-      />
+      <ActivityIndicator size="large" animating={true} color={"#44cf6c"} />
     </View>
   );
 }
 
 const chartconfig = {
-  backgroundColor: "#e26a00",
-  backgroundGradientFrom: "#fb8c00",
-  backgroundGradientTo: "#ffa726",
-  decimalPlaces: 2, // optional, defaults to 2dp
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  backgroundGradientFrom: "#1E2923",
+  backgroundGradientFromOpacity: 0.5,
+  backgroundGradientTo: "#08130D",
+  backgroundGradientToOpacity: 0.9,
+  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false, // optional
   labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   style: {
-    borderRadius: 16,
+    borderRadius: 5,
   },
   propsForDots: {
-    r: "6",
-    strokeWidth: "2",
-    stroke: "#ffa726",
+    r: "4",
+    strokeWidth: "1",
+    stroke: "#31d843",
   },
 };
 
@@ -154,6 +167,8 @@ const styles = StyleSheet.create({
     height: 220,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "95%",
+    backgroundColor: "#1E2923",
+    borderRadius: 5,
   },
 });
