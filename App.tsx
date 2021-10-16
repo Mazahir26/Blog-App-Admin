@@ -1,6 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import {
   ActivityIndicator,
@@ -20,12 +19,43 @@ type obj = {
   name: string;
   time: string;
 };
+type LineChartData = {
+  labels: string[];
+  datasets: [
+    {
+      data: number[];
+    }
+  ];
+};
+var monthShortNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+function Last7Days() {
+  var result = [];
+  for (var i = 0; i < 7; i++) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    result.push(d.toISOString().split("T")[0]);
+  }
+  return result;
+}
 
 export default function App() {
+  const { width } = useWindowDimensions();
   const [Token, setToken] = useState<string | null>("");
   const [text, settext] = useState("");
-  const [Data, setData] = useState<number[]>([]);
-  const [Label, setLabel] = useState<string[]>([]);
+  const [Data, setData] = useState<LineChartData>();
 
   async function login_an() {
     try {
@@ -45,8 +75,27 @@ export default function App() {
       a.forEach(function (x) {
         counts[x] = (counts[x] || 0) + 1;
       });
-      setLabel(Object.keys(a));
-      setData(Object.values(a).map(Number));
+      const lable = Last7Days();
+      let dataset: number[] = [];
+      lable.map((val) => {
+        if (val in counts) {
+          dataset.push(parseInt(counts[val]));
+        } else dataset.push(0);
+      });
+      const t = lable.map(
+        (val) =>
+          val.split("-")[2] + "-" + monthShortNames[new Date(val).getMonth()]
+      );
+      setData({
+        labels: t,
+        datasets: [
+          {
+            data: dataset,
+          },
+        ],
+      });
+      // console.log(Object.values(counts).map(Number));
+      // console.log(Object.keys(counts));
     } catch (e) {
       console.log(e);
     }
@@ -92,39 +141,22 @@ export default function App() {
       </View>
     );
   }
-  if (Data.length > 0 && Label.length > 0) {
+  if (Data !== undefined) {
     return (
       <View style={styles.container}>
         <LineChart
           data={{
-            labels: [...Label],
+            labels: Data.labels,
             datasets: [
               {
-                data: [...Data],
+                data: Data.datasets[0].data,
               },
             ],
           }}
-          width={Dimensions.get("window").width} // from react-native
+          width={width} // from react-native
           height={220}
-          yAxisLabel="$"
-          yAxisSuffix="k"
           yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#ffa726",
-            },
-          }}
+          chartConfig={chartconfig}
           bezier
           style={{
             marginVertical: 8,
@@ -144,6 +176,23 @@ export default function App() {
     </View>
   );
 }
+
+const chartconfig = {
+  backgroundColor: "#e26a00",
+  backgroundGradientFrom: "#fb8c00",
+  backgroundGradientTo: "#ffa726",
+  decimalPlaces: 2, // optional, defaults to 2dp
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  style: {
+    borderRadius: 16,
+  },
+  propsForDots: {
+    r: "6",
+    strokeWidth: "2",
+    stroke: "#ffa726",
+  },
+};
 
 const styles = StyleSheet.create({
   container: {
