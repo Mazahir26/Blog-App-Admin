@@ -3,9 +3,10 @@ import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import axios from "axios";
+import config from "./config";
 
 const Axios = axios.create({
-  baseURL: "https://example.com",
+  baseURL: config.BaseUrl,
 });
 type obj = {
   name: string;
