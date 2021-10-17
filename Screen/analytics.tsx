@@ -32,8 +32,10 @@ export default function App() {
       >
         Last 7 days activities
       </Text>
-      <Chart label="Logins" name="Login" Token={Key} />
+      <Chart label="Logins" name="login" Token={Key} />
+      <Chart label="Anonymous logins" name="anonymous" Token={Key} />
       <Chart label="App Opened" name="open" Token={Key} />
+      <Chart label="Logouts" name="logout" Token={Key} />
       <Chart label="Post Saved" name="save_feed" Token={Key} />
       <Chart label="Post UnSaved" name="remove_feed" Token={Key} />
       <View style={{ height: 50 }} />
