@@ -107,7 +107,7 @@ export default function chart({
 
   if (Data !== undefined) {
     return (
-      <View style={{ marginHorizontal: 7 }}>
+      <View style={{ marginVertical: 7 }}>
         <LineChart
           data={{
             labels: Data.labels,
