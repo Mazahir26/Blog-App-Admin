@@ -107,7 +107,7 @@ export default function chart({
 
   if (Data !== undefined) {
     return (
-      <View style={{ marginVertical: 7 }}>
+      <View style={{ marginHorizontal: 7 }}>
         <LineChart
           data={{
             labels: Data.labels,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     height: 220,
     alignItems: "center",
     justifyContent: "center",
-    width: "95%",
+    width: 220,
     backgroundColor: "#1E2923",
     borderRadius: 5,
   },

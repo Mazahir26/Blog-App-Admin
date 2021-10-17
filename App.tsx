@@ -5,12 +5,14 @@ import {
   Colors,
   TextInput,
   Button,
+  IconButton,
 } from "react-native-paper";
 import Chart from "./Components/chart";
 
 export default function App() {
   const [Token, setToken] = useState<string | null>("");
   const [text, settext] = useState("");
+
   if (Token == null) {
     return (
       <View style={styles.container}>
@@ -57,18 +59,15 @@ export default function App() {
       </View>
     );
   }
+
   return (
-    <ScrollView
-      contentContainerStyle={{ alignItems: "center" }}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <Text
         style={{
           fontSize: 26,
           fontWeight: "bold",
           color: "azure",
           marginBottom: 10,
-          marginHorizontal: 6,
         }}
       >
         Admin
@@ -80,17 +79,19 @@ export default function App() {
           color: "azure",
           marginBottom: 5,
           marginHorizontal: 16,
+          marginVertical: 5,
           alignSelf: "flex-start",
         }}
       >
         Last 7 days activities
       </Text>
-      <Chart label="Logins" name="Login" Token={Token} />
-      <Chart label="App Opened" name="open" Token={Token} />
-      <Chart label="Post Saved" name="save_feed" Token={Token} />
-      <Chart label="Post UnSaved" name="remove_feed" Token={Token} />
-      <View style={{ height: 50 }}></View>
-    </ScrollView>
+      <ScrollView>
+        <Chart label="Logins" name="Login" Token={Token} />
+        <Chart label="App Opened" name="open" Token={Token} />
+        <Chart label="Post Saved" name="save_feed" Token={Token} />
+        <Chart label="Post UnSaved" name="remove_feed" Token={Token} />
+      </ScrollView>
+    </View>
   );
 }
 
