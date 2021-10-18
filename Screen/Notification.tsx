@@ -10,10 +10,15 @@ const Axios = axios.create({
 export default function Notification() {
   const [text, settext] = useState("");
   const { Key }: any = useContext(Context);
+  const [loading, setloading] = useState(false);
 
   async function SendNotif() {
-    if (text.length < 3) return;
+    if (text.length < 3) {
+      ToastAndroid.show("Message is too short", ToastAndroid.SHORT);
+      return;
+    }
     try {
+      setloading(true);
       await Axios.post(
         "send/notification",
         {
@@ -26,8 +31,11 @@ export default function Notification() {
         }
       );
       ToastAndroid.show("Sent Successfully", ToastAndroid.SHORT);
+      setloading(false);
     } catch (e) {
-      ToastAndroid.show(e, ToastAndroid.LONG);
+      setloading(false);
+      ToastAndroid.show("something went wrong", ToastAndroid.LONG);
+      console.log(e);
     }
   }
 
@@ -52,6 +60,8 @@ export default function Notification() {
         }}
       />
       <Button
+        loading={loading}
+        disabled={loading}
         style={{ marginVertical: 10 }}
         mode="contained"
         onPress={() => SendNotif()}
