@@ -9,6 +9,7 @@ const Axios = axios.create({
 });
 export default function Notification() {
   const [text, settext] = useState("");
+  const [body, setbody] = useState("");
   const { Key }: any = useContext(Context);
   const [loading, setloading] = useState(false);
 
@@ -17,19 +18,25 @@ export default function Notification() {
       ToastAndroid.show("Message is too short", ToastAndroid.SHORT);
       return;
     }
+    let d;
+    if (body == "") {
+      d = {
+        title: text,
+      };
+    } else {
+      d = {
+        title: text,
+        body: body,
+      };
+    }
+
     try {
       setloading(true);
-      await Axios.post(
-        "send/notification",
-        {
-          title: text,
+      await Axios.post("send/notification", d, {
+        headers: {
+          Authorization: `Token ${Key}`,
         },
-        {
-          headers: {
-            Authorization: `Token ${Key}`,
-          },
-        }
-      );
+      });
       ToastAndroid.show("Sent Successfully", ToastAndroid.SHORT);
       setloading(false);
     } catch (e) {
@@ -52,7 +59,18 @@ export default function Notification() {
         mode="outlined"
         value={text}
         onChangeText={(t) => settext(t)}
-        label="Send Notification"
+        label="Message Title"
+        theme={{
+          colors: {
+            primary: "darkslategrey",
+          },
+        }}
+      />
+      <TextInput
+        mode="outlined"
+        value={body}
+        onChangeText={(t) => setbody(t)}
+        label="Message Body"
         theme={{
           colors: {
             primary: "darkslategrey",
