@@ -1,6 +1,6 @@
 # Blog App Admin
 
-This is a part of Blog-App Project. You can Check it out [here](https://github.com/Mazahir26/Blog-App)
+This is a part of Blog-App Project. You can Check it out [here](https://github.com/Mazahir26/Blog-App),
 This is the Admin interface of Blog-App Project
 
 ## Getting Started
@@ -20,7 +20,7 @@ export default {
 };
 ```
 
-- You can test the project vis `$ expo start`.
+- You can test the project via `$ expo start`.
 
 ## Build
 
