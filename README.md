@@ -33,8 +33,9 @@ export default {
 - Build `expo build`
 
 ## Preview
+<img  src = "https://user-images.githubusercontent.com/46394948/137871729-a6c24459-d8e3-4b07-b025-a39e9f376f7a.png" width="200"/> <img src = "https://user-images.githubusercontent.com/46394948/137871740-85e78d94-a9b5-490e-86b7-9669251902f7.png" width="200"/>
+<img src = "https://user-images.githubusercontent.com/46394948/137871743-2efecfaa-eb3e-427a-863a-ac7b585cddf4.png" width="200"/>
 
-yet to add
 
 ## Found a Bug
 
